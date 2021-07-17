@@ -1,25 +1,30 @@
 FROM dylan2012/alpine:3.14
 MAINTAINER from dylan2012
 
-ARG VERSION=${VERSION:-1.19.9}
+ARG VERSION=${VERSION:-1.19.10}
 ARG AUTOINDEX_NAME_LEN=${AUTOINDEX_NAME_LEN:-100}
 
 ENV INSTALL_DIR=/usr/local/nginx \
         DATA_DIR=/data/wwwroot \
+		GEOIP_VERSION=3.3 \
         TEMP_DIR=/tmp/nginx
 
-
 RUN set -x && \
-        mkdir -p $(dirname ${DATA_DIR}) ${TEMP_DIR} && \
+        mkdir -p $(dirname ${DATA_DIR}) ${TEMP_DIR} /tmp/ngx_http_geoip2_module /tmp/nginx_mod_h264_streaming && \
         apk update && \
         apk --update --no-cache upgrade && \
         apk add --no-cache --virtual .build-deps geoip geoip-dev pcre libxslt gd openssl-dev pcre-dev zlib-dev \
-                build-base linux-headers libxslt-dev gd-dev openssl-dev libstdc++ libgcc patch git tar curl luajit-dev && \
+        build-base linux-headers libxslt-dev gd-dev libmaxminddb-dev libstdc++ libgcc patch git tar curl luajit-dev && \
         cd ${TEMP_DIR} && \
         DOWN_URL="http://nginx.org/download" && \
         DOWN_URL="${DOWN_URL}/nginx-${VERSION}.tar.gz" && \
         FILE_NAME=${DOWN_URL##*/} && mkdir -p ${TEMP_DIR}/${FILE_NAME%%\.tar*} && \
         curl -Lk ${DOWN_URL} | tar xz -C ${TEMP_DIR} --strip-components=1 && \
+        GEOIP_DOWN_URL="https://github.com/leev/ngx_http_geoip2_module/archive/$GEOIP_VERSION.tar.gz" && \
+		curl -Lk ${GEOIP_DOWN_URL} | tar xz -C /tmp/ngx_http_geoip2_module --strip-components=1 && \
+		H264_DOWN_URL="http://h264.code-shop.com/download/nginx_mod_h264_streaming-2.2.7.tar.gz" && \
+		curl -Lk ${H264_DOWN_URL} | tar xz -C /tmp/nginx_mod_h264_streaming --strip-components=1 && \
+		sed -i '158,161d' /tmp/nginx_mod_h264_streaming/src/ngx_http_streaming_module.c && \
         git clone -b v0.6.4 https://github.com/yaoweibin/ngx_http_substitutions_filter_module.git && \
         git clone -b v0.4.3 https://github.com/aperezdc/ngx-fancyindex.git && \
         git clone -b v0.3.1rc1 https://github.com/simplresty/ngx_devel_kit.git && \
@@ -79,11 +84,13 @@ RUN set -x && \
                 --add-module=./ngx_http_dyups_module \
                 --add-module=./headers-more-nginx-module \
                 --add-dynamic-module=./nginx-ipip-module \
+				--add-dynamic-module=/tmp/ngx_http_geoip2_module \
+				--add-module=/tmp/nginx_mod_h264_streaming \
         && \
         make -j$(getconf _NPROCESSORS_ONLN) && \
         make install && \
         runDeps="$( scanelf --needed --nobanner --recursive /usr/local/ | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' | sort -u | xargs -r apk info --installed | sort -u )" && \
-        runDeps="${runDeps} inotify-tools supervisor logrotate python luajit-dev" && \
+        runDeps="${runDeps} inotify-tools supervisor logrotate luajit-dev" && \
         apk del .build-deps && \
         apk del build-base git patch && \
         apk add --no-cache --virtual .ngx-rundeps $runDeps && \
