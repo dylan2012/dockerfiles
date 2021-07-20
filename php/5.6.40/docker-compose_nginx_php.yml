@@ -1,0 +1,37 @@
+version: '2'
+
+services:
+    php:
+        build:
+            context: https://github.com/xiaoyawl/docker-php.git
+        restart: always
+        privileged: true
+        image: benyoo/php:5.6.24
+        environment:
+        - TERM=linux
+        - MEMCACHE=Yes
+        - REDIS=Yes
+        - TIMEZONE=Asia/Shanghai
+        volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - /data/test-www:/data/wwwroot:rw
+    nginx:
+        build:
+            context: https://github.com/xiaoyawl/docker-nginx.git
+        restart: always
+        privileged: true
+        image: benyoo/nginx:1.10.1
+        ports:
+        - "80:80"
+        - "443:443"
+        links:
+        - php:php
+        volumes_from:
+        - php
+        environment:
+        - PHP_FPM=Yes
+        - PHP_FPM_SERVER=php
+        - PHP_FPM_PORT=9000
+        volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - /data/test-www:/data/wwwroot:rw
