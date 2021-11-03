@@ -4,8 +4,8 @@ services:
     container_name: php_server
     restart: always
     privileged: true
-    #network_mode: host
-    image: dylan2012/php:5.6.40
+    network_mode: host
+    image: dylan2012/php:7.4.20
     environment:
       - MEMCACHE=enable
       - REDIS=enable
@@ -13,7 +13,7 @@ services:
       - TIMEZONE=Asia/Shanghai
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /data/wwwroot:/data/wwwroot:rw
+      - ./wwroot:/data/wwwroot:rw
   nginx:
     container_name: nginx
     restart: always
@@ -31,6 +31,6 @@ services:
       - PHP_FPM_PORT=9000
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /data/wwwroot:/data/wwwroot:rw
-      - /data/wwwlogs:/data/wwwlogs:rw
-      - /data/conf/nginx/vhost:/usr/local/nginx/conf/vhost:rw
+      - ./wwwroot:/data/wwwroot:rw
+      - ./wwwlogs:/data/wwwlogs:rw
+      - ./vhost:/usr/local/nginx/conf/vhost:rw
