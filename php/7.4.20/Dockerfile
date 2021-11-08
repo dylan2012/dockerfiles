@@ -129,6 +129,8 @@ RUN set -xe && \
     ${INSTALL_DIR}/bin/pecl install swoole && \
 #Install Redis
     ${INSTALL_DIR}/bin/pecl install redis && \
+#Install MongoDb
+    ${INSTALL_DIR}/bin/pecl install mongodb && \
 #Install Xdebug
     ${INSTALL_DIR}/bin/pecl install xdebug && \
 #Install Event
