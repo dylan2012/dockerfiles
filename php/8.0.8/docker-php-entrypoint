@@ -1,4 +1,12 @@
 #!/bin/bash
+#########################################################################
+# File Name: entrypoint.sh
+# Author: LookBack
+# Email: admin#dwhd.org
+# Version:
+# Created Time: 2016年08月13日 星期六 00时50分04秒
+#########################################################################
+
 set -e
 #unset PHP_INI_DIR PHP_ASC_URL TEMP_DIR PHP_CFLAGS PHP_MD5 PHPIZE_DEPS PHP_URL PHP_LDFLAGS GPG_KEYS PHP_CPPFLAGS PHP_SHA256 PHP_EXTRA_CONFIGURE_ARGS
 [[ "${1#-}" != "$1" ]] && set -- php-fpm "$@"
@@ -16,7 +24,6 @@ EVENT=${EVENT:-enable}
 REDIS=${REDIS:-enable}
 MEMCACHE=${MEMCACHE:-enable}
 SWOOLE=${SWOOLE:-enable}
-MONGODB=${MONGODB:-enable}
 
 XDEBUG_DEFAULT_CONF=${XDEBUG_DEFAULT_CONF:-enable}
 XDEBUG=${XDEBUG:-disable}
@@ -30,7 +37,7 @@ UPLOAD_MAX_FILESIZE=${UPLOAD_MAX_FILESIZE:-50M}
 MAX_EXECUTION_TIME=${MAX_EXECUTION_TIME:-5}
 PHP_FPM_CONF=${PHP_FPM_CONF:-${PHP_INI_DIR}/php-fpm.conf}
 PHP_FPM_PID=${PHP_FPM_PID:-${INSTALL_DIR}/var/run/php-fpm.pid}
-PHP_SESSION_DIR=${PHP_SESSION_DIR:-${INSTALL_DIR}/var/session}
+PHP_SESSION_DIR=${PHP_SESSION_DIR:-￥{INSTALL_DIR}/var/session}
 PHP_DISABLE_FUNCTIONS=${PHP_DISABLE_FUNCTIONS:-passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket,popen}
 DISPLAY_ERROES=${DISPLAY_ERROES:-Off}
 
@@ -127,13 +134,6 @@ if [[ "${SWOOLE}" =~ ^[eE][nN][aA][bB][lL][eE]$ ]]; then
 	EOF
 fi
 
-if [[ "${MONGODB}" =~ ^[eE][nN][aA][bB][lL][eE]$ ]]; then
-	cat > ${PHP_INI_DIR}/php.d/10-mongodb.ini <<-EOF
-		[mongodb]
-		extension=mongodb.so
-	EOF
-fi
-
 if [[ "${XDEBUG}" =~ [eE][nN][aA][bB][lL][eE] ]]; then
 	if [[ "${XDEBUG_DEFAULT_CONF}" =~ [eE][nN][aA][bB][lL][eE] ]]; then
 		cat >> ${PHP_INI_DIR}/php.d/10-xdebug.ini <<-EOF
@@ -175,9 +175,4 @@ fi
 
 [[ "${PHP_CLI}" =~ ^[eE][nN][aA][bB][lL][eE]$ ]] && { shift $# && set -- ${PHP_CLI_COMMAND} $@; }
 
-#exec "$@"
-
-[ -f /var/log/supervisor ] || mkdir -p /var/log/supervisor
-[ -f /data/wwwlogs/supervisor ] || mkdir -p /data/wwwlogs/supervisor
-
-supervisord -n -c /etc/supervisord.conf
+exec "$@"

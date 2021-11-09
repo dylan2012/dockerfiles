@@ -1,0 +1,69 @@
+version: '3'
+services:
+  memcached:
+    container_name: memcached
+    restart: always
+    privileged: true
+    image: memcached:latest
+    ports:
+      - "127.0.0.1:11211:11211"
+  php:
+    container_name: php_server
+    restart: always
+    privileged: true
+    image: dylan2012/php:7.4.20
+    links:
+      - memcached:memcached
+    environment:
+      - MEMCACHED=enable
+      - TIMEZONE=Asia/Shanghai
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /data/wwwroot:/data/wwwroot:rw
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+  mysql:
+    container_name: mysql
+    restart: always
+    image: mysql:5.5.62
+    privileged: true
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=ZWVmMjI5Y2
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /data/mysql:/data/mysql:rw
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+  nginx:
+    container_name: nginx
+    restart: always
+    privileged: true
+    image: dylan2012/nginx:1.19.10
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - php:php_server
+      - memcached:memcached
+    environment:
+      - PHP_FPM=Enable
+      - PHP_FPM_SERVER=php_server
+      - PHP_FPM_PORT=9000
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /data/wwwroot:/data/wwwroot:rw
+      - /data/wwwlogs:/data/wwwlogs:rw
+      - /data/conf/nginx/vhost:/usr/local/nginx/conf/vhost:rw
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"

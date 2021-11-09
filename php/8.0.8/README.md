@@ -13,7 +13,6 @@ curl -Lks https://get.docker.com/ | sh
 | EXPOSE_PHP | Off  | 可选值Off或者On |
 | MEMCACHE | disable | PHP Memcache 插件开关 |
 | REDIS | disable | PHP Redis 插件开关 |
-| MONGODB | enable | PHP MongoDb 插件开关 |
 | TIMEZONE | Asia/Shanghai | PHP 时区 |
 | POST_MAX_SIZE | 100M | PHP post_max_size 值 |
 | UPLOAD_MAX_FILESIZE | 50M | PHP upload_max_filesize 值 |
@@ -29,7 +28,7 @@ curl -Lks https://get.docker.com/ | sh
 | XDEBUG_DEFAULT_CONF | enable | 默认使用默认的Xdebug的配置文件 |
 
 ## 已安装扩展
-Swoole、Redis、Xdebug、Event、Memcached、Memcache、ionCube、imagick、MongoDb
+Swoole、Redis、Xdebug、Event、Memcached、Memcache、ionCube、imagick
 
 
 ```bash

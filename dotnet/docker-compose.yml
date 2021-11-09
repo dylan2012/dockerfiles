@@ -1,0 +1,23 @@
+version: '3.1'
+services:
+  lr365_lottospider:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    restart: always
+    image: lottospider/netcore:2.2.6
+    container_name: lottospider
+    #command: /bin/bash -c "dotnet SpiderLotto.dll -s"
+    privileged: true
+    network_mode: host
+    stdin_open: true
+    tty: true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "./app:/app:rw"
+    build:
+      context: .
+      dockerfile: Dockerfile
