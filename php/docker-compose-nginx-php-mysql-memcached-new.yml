@@ -6,20 +6,22 @@ services:
     privileged: true
     image: memcached:latest
     ports:
-      - "127.0.0.1:11211:11211"
+    - "11211:11211"
   php:
     container_name: php_server
     restart: always
     privileged: true
-    image: dylan2012/php:7.4.20
+    image: dylan2012/php:7.4.25
     links:
-      - memcached:memcached
+    - memcached:memcached
     environment:
-      - MEMCACHED=enable
-      - TIMEZONE=Asia/Shanghai
+    - MEMCACHE=enable
+    - POST_MAX_SIZE=1024M
+    - UPLOAD_MAX_FILESIZE=1024M
+    - MAX_EXECUTION_TIME=7300
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /data/wwwroot:/data/wwwroot:rw
+    - /etc/localtime:/etc/localtime:ro
+    - /data/wwwroot:/data/wwwroot:rw
     logging:
       driver: "json-file"
       options:
@@ -29,14 +31,13 @@ services:
     container_name: mysql
     restart: always
     image: mysql:5.5.62
-    privileged: true
     ports:
-      - "3306:3306"
+    - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=ZWVmMjI5Y2
+    - MYSQL_ROOT_PASSWORD=MzhiYzVj
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /data/mysql:/var/lib/mysql:rw
+    - /etc/localtime:/etc/localtime:ro
+    - /data/mysql:/var/lib/mysql:rw
     logging:
       driver: "json-file"
       options:
@@ -48,20 +49,20 @@ services:
     privileged: true
     image: dylan2012/nginx:1.19.10
     ports:
-      - "80:80"
-      - "443:443"
+    - "80:80"
+    - "443:443"
     links:
-      - php:php_server
-      - memcached:memcached
+    - php:php_server
+    - memcached:memcached
     environment:
-      - PHP_FPM=Enable
-      - PHP_FPM_SERVER=php_server
-      - PHP_FPM_PORT=9000
+    - PHP_FPM=Enable
+    - PHP_FPM_SERVER=php_server
+    - PHP_FPM_PORT=9000
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /data/wwwroot:/data/wwwroot:rw
-      - /data/wwwlogs:/data/wwwlogs:rw
-      - /data/conf/nginx/vhost:/usr/local/nginx/conf/vhost:rw
+    - /etc/localtime:/etc/localtime:ro
+    - /data/wwwroot:/data/wwwroot:rw
+    - /data/wwwlogs:/data/wwwlogs:rw
+    - /data/conf/vhost:/usr/local/nginx/conf/vhost:rw
     logging:
       driver: "json-file"
       options:
