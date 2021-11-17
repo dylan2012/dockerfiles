@@ -1,0 +1,22 @@
+version: '3'
+services:
+  nginx:
+    container_name: nginx
+    restart: always
+    privileged: true
+    #network_mode: host
+    image: dylan2012/nginx:1.20.1
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./wwwroot:/data/wwwroot:rw
+      - ./wwwlogs:/data/wwwlogs:rw
+      - ./vhost:/usr/local/nginx/conf/vhost:rw
+      - /etc/letsencrypt:/etc/letsencrypt:rw
+      - /var/lib/letsencrypt:/var/lib/letsencrypt:rw
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200M"
