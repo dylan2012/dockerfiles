@@ -14,3 +14,13 @@ docker run -d -v /usr/local/nginx/conf:/usr/local/nginx/conf -p 80:80 -p 443:443
 ## docker-compose安装
 
 curl -Lk https://raw.githubusercontent.com/dylan2012/dockerfiles/main/nginx/docker-compose.yml >docker-compose.yml && docker-compose up -d
+
+
+## letsencrypt证书安装
+curl -Lk https://raw.githubusercontent.com/dylan2012/dockerfiles/main/nginx/docker-compose-letsencrypt >docker-compose.yml && docker-compose up -d
+进入容器
+docker exec -it nginx bash
+手动配置
+certbot certonly --nginx --nginx-server-root /usr/local/nginx/conf -d xxx.com
+自动配置
+certbot --nginx --nginx-server-root /usr/local/nginx/conf -d xxx.com
