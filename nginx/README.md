@@ -17,7 +17,7 @@ curl -Lk https://raw.githubusercontent.com/dylan2012/dockerfiles/main/nginx/dock
 
 
 ## letsencrypt证书安装
-curl -Lk https://raw.githubusercontent.com/dylan2012/dockerfiles/main/nginx/docker-compose-letsencrypt >docker-compose.yml && docker-compose up -d
+curl -Lk https://raw.githubusercontent.com/dylan2012/dockerfiles/main/nginx/docker-compose-letsencrypt.yml >docker-compose.yml && docker-compose up -d
 
 进入容器
 
