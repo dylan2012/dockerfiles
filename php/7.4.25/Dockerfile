@@ -183,8 +183,8 @@ RUN set -xe && \
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
 #Clear OS
     apk del .build-deps && \
-###    bash -c "rm -rf /tmp/{php,pear,memcache{,d},libevent,event}"
-    echo
+    bash -c "rm -rf /tmp/{php,pear,memcache{,d},libevent,event,ImageMagick}"
+#    echo
 
 COPY docker-php-ext-* /usr/local/bin/
 COPY entrypoint.sh /entrypoint.sh

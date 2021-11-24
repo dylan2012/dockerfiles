@@ -16,7 +16,6 @@ EVENT=${EVENT:-enable}
 REDIS=${REDIS:-enable}
 MONGODB=${MONGODB:-enable}
 MEMCACHE=${MEMCACHE:-enable}
-SWOOLE=${SWOOLE:-enable}
 
 XDEBUG_DEFAULT_CONF=${XDEBUG_DEFAULT_CONF:-enable}
 XDEBUG=${XDEBUG:-disable}
