@@ -35,3 +35,20 @@ All optional:
 -e SPW: Server management password. ⚠️
 
 -e HPW: "DEFAULT" hub management password. ⚠️
+
+
+
+## 其它的VPN使用
+
+docker run --name l2tp --env-file ./vpn.env --restart=always -p 500:500/udp -p 4500:4500/udp -d --privileged hwdsl2/ipsec-vpn-server
+
+vpn.env
+
+VPN_IPSEC_PSK=vpn
+VPN_USER=vpn
+VPN_PASSWORD=NzA2ODI3M
+VPN_ADDL_USERS=vpnuser1 vpnuser2
+VPN_ADDL_PASSWORDS=aa123123 aa123123
+
+
+
