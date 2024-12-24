@@ -3,7 +3,7 @@ MAINTAINER from Dylan
 
 ENV PHP_VERSION="7.4.33" \
     INSTALL_DIR=/usr/local/php DATA_DIR=/data/wwwroot TEMP_DIR=/tmp/php \
-    PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O2" 
+    PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O2"
 ENV PHP_INI_DIR="${INSTALL_DIR}/etc" \
     PATH="$INSTALL_DIR/bin:$INSTALL_DIR/sbin:$PATH" \
     PHP_EXTRA_CONFIGURE_ARGS="--enable-fpm --with-fpm-user=www --with-fpm-group=www" \
@@ -25,7 +25,7 @@ RUN set -xe && \
     addgroup -g 400 -S www && \
     adduser -u 400 -S -H -s /sbin/nologin -g 'PHP' -G www www && \
 #Insall DEPS PKG
-    export PERSISTENT_DEPS="bash curl xz ca-certificates openssl curl tar iproute2 libssh2 ncurses-terminfo pkgconf pkgconfig libice libsm libxt libxpm c-client db" && \
+    export PERSISTENT_DEPS="bash curl xz ca-certificates openssl curl tar iproute2 libssh2 ncurses-terminfo pkgconf pkgconfig libice libsm libxt libxpm c-client db"&& \
     export PHPIZE_DEPS="autoconf file g++ gcc libc-dev make re2c" && \
     export MEMCACHE_DEPS="libmemcached-dev cyrus-sasl-dev libsasl linux-headers git" && \
     apk add --no-cache --virtual .persistent-deps ${PERSISTENT_DEPS} && \
@@ -93,8 +93,8 @@ RUN set -xe && \
         --disable-debug \
         --disable-cgi \
 #		--enable-zts \
-#		--enable-maintainer-zts \ 
-#		--enable-pthreads=shared \ 
+#		--enable-maintainer-zts \
+#		--enable-pthreads=shared \
 #		--with-tsrm-pthreads \
 #       --disable-ipv6 \
         --disable-rpath && \
@@ -135,6 +135,9 @@ RUN set -xe && \
     ${INSTALL_DIR}/bin/pecl install event && \
 ####Install Memcached
     ${INSTALL_DIR}/bin/pecl install memcached && \
+####Install hprose
+    ${INSTALL_DIR}/bin/pecl install hprose && \
+    echo -e '[hprose]\nextension = hprose.so' > ${PHP_INI_DIR}/php.d/10-hprose.ini && \
 ####Install Memcache
 ###    ${INSTALL_DIR}/bin/pecl install memcache && \
 ###php8.0
@@ -157,7 +160,7 @@ RUN set -xe && \
 ####Install imagick
     ${INSTALL_DIR}/bin/pecl install https://pecl.php.net/get/imagick-3.4.4.tgz && \
     echo -e '[ImageMagick]\nextension = imagick.so' > ${PHP_INI_DIR}/php.d/10-ImageMagick.ini && \
-### Install Composeer	
+### Install Composeer
 	php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
 	php composer-setup.php  && \
 	php -r "unlink('composer-setup.php');"  && \
