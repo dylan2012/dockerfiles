@@ -179,7 +179,9 @@ RUN set -xe && \
 #Clear OS
     apk del .build-deps && \
     bash -c "rm -rf /tmp/{php,pear,memcache{,d},libevent,event,ImageMagick}"
-#    echo
+#Iconv lib
+RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.12/community/ gnu-libiconv=1.15-r2
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 
 COPY docker-php* /usr/local/bin/
 COPY entrypoint.sh /entrypoint.sh
